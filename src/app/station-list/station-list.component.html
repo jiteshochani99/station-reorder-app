@@ -17,7 +17,7 @@
         (click)="clearSearch()"
         aria-label="Clear search"
       >
-        ×
+        
       </button>
     </div>
 
@@ -46,86 +46,83 @@
   </div>
 
   <!-- Station List -->
-<div cdkDropList (cdkDropListDropped)="onDrop($event)">
-  <mat-accordion>
-    <mat-expansion-panel
-      *ngFor="let station of filteredStations; let i = index"
-      cdkDrag
-      class="station-card"
-    >
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <div class="station-summary">
-            <!-- Sequence Number -->
-            <div class="station-sequence">
-              <strong>#{{ i + 1 }}</strong>
-            </div>
+  <div cdkDropList (cdkDropListDropped)="onDrop($event)">
+    <mat-accordion>
+      <mat-expansion-panel
+        *ngFor="let station of filteredStations; let i = index"
+        cdkDrag
+        class="station-card"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <div class="station-summary">
+              <!-- Sequence Number -->
+              <div class="station-sequence">
+                <strong>#{{ i + 1 }}</strong>
+              </div>
 
-            <!-- Station Info -->
-            <div class="station-info">
-              <h3 class="station-name">{{ station['Station Name'] }}</h3>
-              <p class="station-city">
-                <mat-icon>location_on</mat-icon> {{ station['City'] }}
+              <!-- Station Info -->
+              <div class="station-info">
+                <h3 class="station-name">{{ station['Station Name'] }}</h3>
+                <p class="station-city">
+                  <mat-icon>location_on</mat-icon> {{ station['City'] }}
+                </p>
+              </div>
+
+              <!-- Favorite Icon -->
+              <div
+                class="favorite-icon"
+                (click)="toggleFavorite(station); $event.stopPropagation()"
+              >
+                <mat-icon [ngClass]="{'favorite': station.isFavorite}">
+                  {{ station.isFavorite ? 'star' : 'star_border' }}
+                </mat-icon>
+              </div>
+
+              <!-- Move Buttons -->
+              <button
+                class="move-to-top-button"
+                (click)="moveStationToTop(station['Station Id']); $event.stopPropagation()"
+              >
+                Move to Top
+              </button>
+              <button
+                class="move-to-bottom-button"
+                (click)="moveStationToBottom(station['Station Id']); $event.stopPropagation()"
+              >
+                Move to Bottom
+              </button>
+
+              <!-- Remove Button -->
+              <button
+                class="remove-button"
+                (click)="removeStation(station['Station Id']); $event.stopPropagation()"
+              >
+                Remove
+              </button>
+
+              <!-- Stipend -->
+              <p class="station-stipend">
+                <mat-icon>currency_rupee</mat-icon> {{ station['Stipend (HD)'] }}
               </p>
             </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
-            <!-- Favorite Icon -->
-            <div
-              class="favorite-icon"
-              (click)="toggleFavorite(station); $event.stopPropagation()"
-            >
-              <mat-icon [ngClass]="{'favorite': station.isFavorite}">
-                {{ station.isFavorite ? 'star' : 'star_border' }}
-              </mat-icon>
-            </div>
-
-            <!-- Move Buttons -->
-            <button
-              class="move-to-top-button"
-              (click)="moveStationToTop(station['Station Id']); $event.stopPropagation()"
-            >
-              Move to Top
-            </button>
-            <button
-              class="move-to-bottom-button"
-              (click)="moveStationToBottom(station['Station Id']); $event.stopPropagation()"
-            >
-              Move to Bottom
-            </button>
-
-            <!-- Remove Button -->
-            <button
-              class="remove-button"
-              (click)="removeStation(station['Station Id']); $event.stopPropagation()"
-            >
-              Remove
-            </button>
-
-            <!-- Stipend -->
-            <p class="station-stipend">
-              <mat-icon>currency_rupee</mat-icon> {{ station['Stipend (HD)'] }}
-            </p>
-
-            <!-- Update Position Field -->
-            <div *ngIf="searchQuery" class="update-position-container">
-              <label for="position-{{ station['Station Id'] }}">Update Position:</label>
-              <input
-                id="position-{{ station['Station Id'] }}"
-                type="number"
-                [(ngModel)]="station.updatedPosition"
-                [value]="getStationMainPosition(station['Station Id'])"
-                min="1"
-                [max]="stations.length"
-              />
-              <button (click)="updateStationPosition(station)">Update</button>
-            </div>
-          </div>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-    </mat-expansion-panel>
-  </mat-accordion>
-</div>
-
+        <!-- Station Details (Expanded Content) -->
+        <div class="station-details">
+          <p><strong>Station Id:</strong> {{ station['Station Id'] }}</p>
+          <p><strong>Business Domain:</strong> {{ station['Business Domain'] }}</p>
+          <p><strong>Stipend (FD):</strong> ₹{{ station['Stipend (FD)'] }}</p>
+          <p><strong>Total Project:</strong> {{ station['Total Project'] }}</p>
+          <p><strong>Discipline:</strong> {{ station['Discipline'] }}</p>
+          <p><strong>Description:</strong> {{ station['Description'] }}</p>
+          <p><strong>Project Domain:</strong> {{ station['Project Domain'] }}</p>
+          <p><strong>Title:</strong> {{ station['Title'] }}</p>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
 
   <!-- Favorites Popup -->
   <div
